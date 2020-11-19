@@ -164,11 +164,8 @@ class LoggingEnsembleSampler(emcee.EnsembleSampler):
         """
 
         print('running {:d} walkers for {:d} steps'.format(self.k, nsteps))
-
-
         if status is None:
             status = nsteps // 10
-
 
         for n, result in enumerate( self.sample(X0, iterations=nsteps, **kwargs), start=1 ):
             if n % status == 0 or n == nsteps:
@@ -234,8 +231,7 @@ class Chain:
         self.sys_idx = {} # keep track what parameters are used for each system
         Nsys = len(system_strs)
         for i, s in enumerate(system_strs):
-            design, design_min, design_max, labels = \
-                    load_design(s, pset='main')
+            design, design_min, design_max, labels = load_design(s, pset='main')
             self.sysdep_max.append(design_max[0])
             self.sysdep_min.append(design_min[0])
             self.sysdep_labels.append(labels[0])
@@ -248,8 +244,7 @@ class Chain:
                 self.common_ndim = len(self.common_max)
                 self.common_range = np.array([self.common_min,
                                                 self.common_max]).T
-        self.sysdep_range = np.array([self.sysdep_min,
-                                      self.sysdep_max]).T
+        self.sysdep_range = np.array([self.sysdep_min, self.sysdep_max]).T
         self.sysdep_ndim = len(self.sysdep_max)
         self.max = np.concatenate([self.sysdep_max, self.common_max])
         self.min = np.concatenate([self.sysdep_min, self.common_min])
@@ -291,14 +286,12 @@ class Chain:
         self.prior_volume = np.prod( diff )
 
         print("Pre-compute experimental covariance matrix")
-
         if change_exp_error:
             print("WARNING! Multiplying experimental error by values in change_exp_error_vals : ")
             print(change_exp_error_vals)
             for s in system_strs:
                 for obs in change_exp_error_vals[s].keys():
                     Yexp[s][obs]['err'] *= change_exp_error_vals[s][obs]
-
 
         for s in system_strs:
             nobs = 0
@@ -308,6 +301,7 @@ class Chain:
                 try:
                     obsdata = Yexp[s][obs]['mean'][idf]
                 except KeyError:
+                    print("KeyError in building slices")
                     continue
 
                 n = obsdata.size
@@ -370,14 +364,10 @@ class Chain:
 
         """
         X = np.array(X, copy=False, ndmin=2)
-
         lp = np.zeros(X.shape[0])
-
         inside = np.all((X > self.min) & (X < self.max), axis=1)
         lp[~inside] = -np.inf
-
         extra_std = X[inside, -1]
-
 
         nsamples = np.count_nonzero(inside)
         if nsamples > 0:

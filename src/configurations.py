@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 from scipy.interpolate import interp1d
-from bins_and_cuts import obs_cent_list, obs_range_list
+from bins_and_cuts import obs_cent_list, calibration_obs_cent_list, obs_range_list
 
 
 # fully specify numeric data types, including endianness and size, to
@@ -16,7 +16,7 @@ complex_t = '<c16'
 np.random.seed(1)
 # Work, Design, and Exp directories
 workdir = Path(os.getenv('WORKDIR', '.'))
-design_dir =  str(workdir/'production_designs/500pts')
+design_dir =  str(workdir/'production_designs/')
 dir_obs_exp = "HIC_experimental_data"
 
 ####################################
@@ -71,7 +71,7 @@ systems = [
 system_strs = ['{:s}-{:s}-{:d}'.format(*s) for s in systems]
 num_systems = len(system_strs)
 
-#these are problematic points for Pb Pb 2760 run with 500 design points
+#these are problematic points for Pb Pb 2760 and Au Au 200 with 500 design points
 nan_sets_by_deltaf = {
                         0 : set([334, 341, 377, 429, 447, 483]),
                         1 : set([285, 334, 341, 447, 483, 495]),
@@ -92,6 +92,10 @@ delete_design_pts_set = nan_design_pts_set.union(
 
 delete_design_pts_validation_set = [10, 68, 93] # idf 0
 
+#these are the problematic design points for Xe Xe 5440 w/ 1000 design points
+nan_design_pts_set_Xe = set([354, 494, 601, 682, 699, 719, 736, 758, 768, 770, 834, 902, 908, 949])
+unfinished_design_pts_set_Xe = set([328, 354, 562, 672, 682, 736, 818, 897, 902])
+delete_design_pts_set_Xe = nan_design_pts_set_Xe.union(unfinished_design_pts_set_Xe)
 
 class systems_setting(dict):
     def __init__(self, A, B, sqrts):
@@ -147,7 +151,6 @@ if 'Pb-Pb-2760' in system_strs:
     SystemsInfo["Pb-Pb-2760"]["npc"]=10
     SystemsInfo["Pb-Pb-2760"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Pb-Pb-2760.dat'
 
-
 if 'Au-Au-200' in system_strs:
     SystemsInfo["Au-Au-200"]["run_id"] = "production_500pts_Au_Au_200"
     SystemsInfo["Au-Au-200"]["n_design"] = 500
@@ -158,6 +161,14 @@ if 'Au-Au-200' in system_strs:
 
 if 'Pb-Pb-5020' in system_strs:
     SystemsInfo["Pb-Pb-5020"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Pb-Pb-5020.dat'
+
+if 'Xe-Xe-5440' in system_strs:
+    SystemsInfo["Xe-Xe-5440"]["run_id"] = "production_1000pts_Xe_Xe_5440"
+    SystemsInfo["Xe-Xe-5440"]["n_design"] = 1000
+    SystemsInfo["Xe-Xe-5440"]["n_validation"] = 0
+    SystemsInfo["Xe-Xe-5440"]["design_remove_idx"]=list(delete_design_pts_set_Xe)
+    SystemsInfo["Xe-Xe-5440"]["npc"] = 5
+    #SystemsInfo["Xe-Xe-5440"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-200.dat'
 
 print("SystemsInfo = ")
 print(SystemsInfo)
@@ -186,10 +197,12 @@ if validation:
         pass
     elif crossvalidation:
         print("... cross-validation")
-        cross_validation_pts = np.random.choice(n_design_pts_main,
-                                                n_design_pts_main // 5,
-                                                replace = False)
-        delete_design_pts_set = cross_validation_pts #omit these points from training
+        system_str = system_strs[0]
+        n_design = SystemsInfo[system_str]["n_design"]
+        cross_validation_pts = np.random.choice(n_design, n_design // 5, replace = False)
+        new_delete_design = set(SystemsInfo[system_str]["design_remove_idx"]).union(set(cross_validation_pts))
+        SystemsInfo[system_str]["design_remove_idx"] = list(new_delete_design) #omit these points from training
+        validation_pt = fixed_validation_pt
     else:
         validation_pt = fixed_validation_pt
         print("... independent-validation, using validation_pt = " + str(validation_pt))
@@ -202,13 +215,8 @@ set_exp_error_to_zero = False
 change_exp_error = False
 change_exp_error_vals = {
                         'Au-Au-200': {},
-
-                        'Pb-Pb-2760' : {
-                                        'dN_dy_proton' : 1.e-1,
-                                        'mean_pT_proton' : 1.e-1
-                                        }
-
-}
+                        'Pb-Pb-2760' : {'dN_dy_proton' : 1.e-1, 'mean_pT_proton' : 1.e-1}
+                        }
 
 #if this switch is turned on, some parameters will be fixed
 #to certain values in the parameter estimation. see bayes_mcmc.py
@@ -263,14 +271,27 @@ bayes_dtype = [    (s,
                  for s in system_strs
             ]
 
+bayes_calibration_dtype = [    (s,
+                  [(obs, [("mean",float_t,len(cent_list)),
+                          ("err",float_t,len(cent_list))]) \
+                    for obs, cent_list in calibration_obs_cent_list[s].items() ],
+                  number_of_models_per_run
+                 ) \
+                 for s in system_strs
+            ]
+
 # The active ones used in Bayes analysis (MCMC)
+#active_obs_list = {
+#   sys: list(obs_cent_list[sys].keys()) for sys in system_strs
+#}
+
 active_obs_list = {
-   sys: list(obs_cent_list[sys].keys()) for sys in system_strs
+   sys: list(calibration_obs_cent_list[sys].keys()) for sys in system_strs
 }
 
-#try exluding PHENIX dN/dy proton from fit
 for s in system_strs:
     if s == 'Au-Au-200':
+        #exluding STAR proton yield/mean pT from fit
         active_obs_list[s].remove('dN_dy_proton')
         active_obs_list[s].remove('mean_pT_proton')
 

@@ -28,6 +28,12 @@ from sklearn.gaussian_process import GaussianProcessRegressor as GPR
 from sklearn.gaussian_process import kernels
 from sklearn.preprocessing import StandardScaler
 
+#these are necessary to use the heteroscedastic noise kernel
+#see https://github.com/jmetzen/gp_extras for installation and
+#https://jmetzen.github.io/2015-12-17/gp_extra.html for discussion
+from gp_extras.kernels import HeteroscedasticKernel
+from sklearn.cluster import KMeans
+
 from configurations import *
 from calculations_load import trimmed_model_data
 
@@ -85,8 +91,8 @@ class Emulator:
         self.observables = []
         self._slices = {}
 
-        for obs, cent_list in obs_cent_list[system_str].items():
-        #for obs, cent_list in calibration_obs_cent_list[system_str].items():
+        #for obs, cent_list in obs_cent_list[system_str].items():
+        for obs, cent_list in calibration_obs_cent_list[system_str].items():
             self.observables.append(obs)
             n = np.array(cent_list).shape[0]
             self._slices[obs] = slice(self.nobs, self.nobs + n)
@@ -104,12 +110,12 @@ class Emulator:
         for ipt, data in enumerate(trimmed_model_data[system_str]):
             row = np.array([])
             for obs in self.observables:
-                #n_bins_bayes = len(calibration_obs_cent_list[system_str][obs]) # only using these bins for calibration
-                #values = np.array(trimmed_model_data[system_str][pt, idf][obs]['mean'][:n_bins_bayes] )
-                values = np.array(data[idf][obs]['mean'])
+                n_bins_bayes = len(calibration_obs_cent_list[system_str][obs]) # only using these bins for calibration
+                values = np.array(data[idf][obs]['mean'][:n_bins_bayes])
+                #values = np.array(data[idf][obs]['mean'])
                 if np.isnan(values).sum() > 0:
                     print("WARNING! FOUND NAN IN MODEL DATA WHILE BUILDING EMULATOR!")
-                    print("Design pt = " + str(pt) + "; Obs = " + obs)
+                    print("Design pt = " + str(ipt) + "; Obs = " + obs)
                 row = np.append(row, values)
             Y.append(row)
         Y = np.array(Y)
@@ -131,9 +137,39 @@ class Emulator:
         # `npc` components but save the full PC transformation for later.
         Z = self.pca.fit_transform( self.scaler.fit_transform(Y) )[:, :npc] # save all the rows (design points), but keep first npc columns
 
+        """
+        pca_transf = self.pca.fit( self.scaler.fit_transform(Y) )
+        Z = self.pca.transform( self.scaler.fit_transform(Y) )[:, :npc]
+        obs_names = []
+        for obs in obs_cent_list['Pb-Pb-2760'].keys():
+            nobs = len(obs)
+            print(obs)
+            for ibin, bin in enumerate(obs_cent_list['Pb-Pb-2760'][obs]):
+                print(bin)
+                if ibin == 0:
+                    obs_names.append(obs)
+                else:
+                    obs_names.append(None)
+
+        pca_matrix = pca_transf.components_[:, :npc].T
+        fig, ax = plt.subplots(1,1, figsize=(15, 5))
+        im = plt.imshow(pca_matrix, cmap='RdBu')
+        plt.ylabel('PC index')
+        plt.xlabel('Observable')
+        plt.yticks([0, 2, 4, 6, 8])
+        plt.xticks(np.arange(0, 123), obs_names, rotation='vertical')
+        from mpl_toolkits.axes_grid1 import make_axes_locatable
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        plt.colorbar(im, cax=cax)
+        plt.tight_layout(True)
+        plt.savefig('PCA.png', dpi=400)
+        """
+
         design, design_max, design_min, labels = prepare_emu_design(system_str)
 
         #delete undesirable data
+        delete_design_pts_set = SystemsInfo[system_str]["design_remove_idx"]
         if len(delete_design_pts_set) > 0:
             print("Warning! Deleting " + str(len(delete_design_pts_set)) + " points from data")
         design = np.delete(design, list(delete_design_pts_set), 0)
@@ -143,29 +179,40 @@ class Emulator:
         # Define kernel (covariance function):
         # Gaussian correlation (RBF) plus a noise term.
         # noise term is necessary since model calculations contain statistical noise
-        k0 = 1. * kernels.RBF(
+        rbf_kern = 1. * kernels.RBF(
                       length_scale=ptp,
                       length_scale_bounds=np.outer(ptp, (4e-1, 1e2)),
                       #nu = 3.5
                    )
-        k1 = kernels.ConstantKernel()
-        k2 = kernels.WhiteKernel(
+        const_kern = kernels.ConstantKernel()
+        #homoscedastic noise kernel
+        hom_white_kern = kernels.WhiteKernel(
                                  noise_level=.1,
                                  noise_level_bounds=(1e-2, 1e2)
                                  )
 
-        #kernel = (k0 + k1 + k2) #this includes a constant kernel
-        kernel = (k0 + k2) # this does not
+        #choose the number of clusters to estimate the heteroscedastic variance
+        n_clusters = 10
+        use_hom_sced_noise = True
 
         # Fit a GP (optimize the kernel hyperparameters) to each PC.
-
         self.gps = []
         for i, z in enumerate(Z.T):
             print("Fitting PC #", i)
+            if use_hom_sced_noise:
+                kernel = (rbf_kern + hom_white_kern)
+            else:
+                #heteroscedastic noise kernel
+                prototypes = KMeans(n_clusters=n_clusters).fit(design).cluster_centers_
+                het_noise_kern = HeteroscedasticKernel.construct(prototypes, 1., (1e-1, 1e1),
+                                                                gamma=1e-5, gamma_bounds="fixed")
+                kernel = (rbf_kern + het_noise_kern)
+
             self.gps.append(
                 GPR(
                 kernel=kernel,
-                alpha=0.01,
+                #alpha=0.01,
+                alpha=0.1,
                 n_restarts_optimizer=nrestarts,
                 copy_X_train=False
                 ).fit(design, z)
@@ -404,8 +451,8 @@ for s in system_strs:
 Trained_Emulators_all_df = {}
 for s in system_strs:
     Trained_Emulators_all_df[s] = {}
-    for idf in [0, 1, 2, 3]:
+    for idf_loc in [0, 1, 2, 3]:
         try:
-            Trained_Emulators_all_df[s][idf] = dill.load(open('emulator/emulator-' + s + '-idf-' + str(idf) + '.dill', "rb"))
+            Trained_Emulators_all_df[s][idf_loc] = dill.load(open('emulator/emulator-' + s + '-idf-' + str(idf_loc) + '.dill', "rb"))
         except:
-            print("WARNING! Can't load emulator for system " + s)
+            print("WARNING! Can't load emulator for system " + s + " for idf " + str(idf_loc))
