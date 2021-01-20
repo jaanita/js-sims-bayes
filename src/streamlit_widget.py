@@ -37,7 +37,7 @@ short_names = {
 
 system_observables = {
                     'Pb-Pb-2760' : ['Tmunu0', #'Tmunu4', 'Tmunu7', 'Tmunu9',
-                    'Tmunu_A', 'Tmunu_xy', 'Tmunu_tr'],
+                    'Tmunu_A', 'Tmunu_tr', 'Tmunu_cums_0_0_1'],
                     }
 
 
@@ -48,9 +48,10 @@ obs_lims = {
                     'Tmunu7' : [0., 2000.],
                     'Tmunu9' : [0., 500.],
                     'Tmunu_A' : [-0.2, 0.],
-                    'Tmunu_A2' : [0., 0.2],
-                    'Tmunu_xy' : [0., 1000.],
+                    #'Tmunu_A2' : [0., 0.2],
+                    #'Tmunu_xy' : [0., 1000.],
                     'Tmunu_tr' : [0., 500.],
+                    'Tmunu_cums_0_0_1': [0., 3000.]
 }
 
 
@@ -62,8 +63,9 @@ obs_word_labels = {
                     'Tmunu9' : r't^{zz}',
                     'Tmunu_A' : r' (t^{xx} - t^{yy}) / (t^{xx} + t^{yy}) ',
                     #'Tmunu_A2' : r'$ (t^{xx} - t^{yy})^2 / (t^{xx} + t^{yy})^2 $',
-                    'Tmunu_xy' : r' (t^{xy})^2 ',
+                    #'Tmunu_xy' : r' (t^{xy})^2 ',
                     'Tmunu_tr' : r' t^{\mu}_{\mu}',
+                    'Tmunu_cums_0_0_1': r' C^{001}',
 }
 
 
