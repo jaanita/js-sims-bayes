@@ -147,7 +147,7 @@ if 'Pb-Pb-2760' in system_strs:
     SystemsInfo["Pb-Pb-2760"]["n_design"] = 500
     SystemsInfo["Pb-Pb-2760"]["n_validation"] = 100
     SystemsInfo["Pb-Pb-2760"]["design_remove_idx"]=list(delete_design_pts_set)
-    SystemsInfo["Pb-Pb-2760"]["npc"]= 5
+    SystemsInfo["Pb-Pb-2760"]["npc"]= 7
     SystemsInfo["Pb-Pb-2760"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Pb-Pb-2760.dat'
 
 
@@ -253,8 +253,40 @@ bayes_dtype = [    (s,
 
 # The active ones used in Bayes analysis (MCMC)
 active_obs_list = {}
-active_obs_list['Pb-Pb-2760'] = ['Tmunu0', #'Tmunu4', 'Tmunu7', 'Tmunu9',
-                                'Tmunu_A', 'Tmunu_xy', 'Tmunu_tr']
+active_obs_list['Pb-Pb-2760'] = ['Tmunu0',
+                                'Tmunu_A',
+                                #'Tmunu_00_00',
+                                #'Tmunu_0i_0i',
+                                #'Tmunu_ij_ij',
+                                'Tmunu_tr',
+                                #'Tmunu_cums_0_0_0',
+                                'Tmunu_cums_0_0_1',
+                                'Tmunu_cums_0_0_2',
+                                'Tmunu_cums_0_1_0',
+                                'Tmunu_cums_0_1_1',
+                                'Tmunu_cums_0_1_2',
+                                'Tmunu_cums_0_2_0',
+                                'Tmunu_cums_0_2_1',
+                                'Tmunu_cums_0_2_2',
+                                'Tmunu_cums_1_0_0',
+                                'Tmunu_cums_1_0_1',
+                                'Tmunu_cums_1_0_2',
+                                'Tmunu_cums_1_1_0',
+                                'Tmunu_cums_1_1_1',
+                                'Tmunu_cums_1_1_2',
+                                'Tmunu_cums_1_2_0',
+                                'Tmunu_cums_1_2_1',
+                                'Tmunu_cums_1_2_2',
+                                'Tmunu_cums_2_0_0',
+                                'Tmunu_cums_2_0_1',
+                                'Tmunu_cums_2_0_2',
+                                'Tmunu_cums_2_1_0',
+                                'Tmunu_cums_2_1_1',
+                                'Tmunu_cums_2_1_2',
+                                'Tmunu_cums_2_2_0',
+                                'Tmunu_cums_2_2_1',
+                                'Tmunu_cums_2_2_2',
+                                ]
 
 print("The active observable list for calibration: " + str(active_obs_list))
 
@@ -359,6 +391,39 @@ def prepare_emu_design(system_str):
     design_max = np.max(design, axis=0)
     design_min = np.min(design, axis=0)
     return design, design_max, design_min, labels
+
+
+
+transform_cumulants = True
+transform_cumulants_powers = {
+                                'Tmunu_cums_0_0_1': 1.,
+                                'Tmunu_cums_0_0_2': 2.,
+                                'Tmunu_cums_0_1_0': 2.,
+                                'Tmunu_cums_0_1_1': 3.,
+                                'Tmunu_cums_0_1_2': 4.,
+                                'Tmunu_cums_0_2_0': 4.,
+                                'Tmunu_cums_0_2_1': 5.,
+                                'Tmunu_cums_0_2_2': 6.,
+                                'Tmunu_cums_1_0_0': 1.,
+                                'Tmunu_cums_1_0_1': 2.,
+                                'Tmunu_cums_1_0_2': 3.,
+                                'Tmunu_cums_1_1_0': 3.,
+                                'Tmunu_cums_1_1_1': 4.,
+                                'Tmunu_cums_1_1_2': 5.,
+                                'Tmunu_cums_1_2_0': 5.,
+                                'Tmunu_cums_1_2_1': 6.,
+                                'Tmunu_cums_1_2_2': 7.,
+                                'Tmunu_cums_2_0_0': 2.,
+                                'Tmunu_cums_2_0_1': 3.,
+                                'Tmunu_cums_2_0_2': 4.,
+                                'Tmunu_cums_2_1_0': 4.,
+                                'Tmunu_cums_2_1_1': 5.,
+                                'Tmunu_cums_2_1_2': 6.,
+                                'Tmunu_cums_2_2_0': 6.,
+                                'Tmunu_cums_2_2_1': 7.,
+                                'Tmunu_cums_2_2_2': 8.,
+}
+
 
 
 MAP_params = {}

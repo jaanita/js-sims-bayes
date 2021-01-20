@@ -2,6 +2,7 @@
 import logging
 import dill
 import matplotlib.pyplot as plt
+import seaborn as sns
 import pandas as pd
 import numpy as np
 from string import ascii_letters
@@ -11,6 +12,7 @@ from emulator import *
 from calculations_load import validation_data, trimmed_model_data
 from bayes_mcmc import Chain, credible_interval
 from bayes_plot import obs_tex_labels_2
+
 def plot_residuals(system_str, emu, design, cent_bin, observables, nrows, ncols):
     """
     Plot a histogram of the percent difference between the emulator
@@ -64,7 +66,7 @@ def plot_residuals(system_str, emu, design, cent_bin, observables, nrows, ncols)
         ax.annotate(" std : " + str( round(std_resid, 2) ), xy=(.05, .8), xycoords = "axes fraction")
 
     plt.tight_layout(True)
-    plt.savefig('validation_plots/emulator_residuals.png', dpi=300)
+    plt.savefig('validation_plots/emulator_residuals.png', dpi=500)
 
     #plt.show()
 
@@ -105,7 +107,7 @@ def plot_residuals_corr(system_str, emu, design, cent_bin, observables):
             #axes[row, col].set_xlim(-0.5, 0.5)
             #axes[row, col].hist2d(res_1, res_2, bins = [bins, bins], density = True)
 
-    plt.savefig('validation_plots/emulator_residuals_corr.png', dpi=300)
+    plt.savefig('validation_plots/emulator_residuals_corr.png', dpi=500)
 
 def plot_scatter(system_str, emu, design, cent_bin, observables):
     """
@@ -114,12 +116,12 @@ def plot_scatter(system_str, emu, design, cent_bin, observables):
     """
 
     print("Plotting scatter plot of emulator vs model")
-    ncols = 3
-    nrows = 2
+    ncols = 5
+    nrows = 5
 
-    if len(observables) > 6:
-        ncols = 3
-        nrows = 3
+    #if len(observables) > 6:
+    #    ncols = 3
+    #    nrows = 3
 
     fig, axes = plt.subplots(figsize=(3*ncols,3*nrows), ncols=ncols, nrows=nrows)
     for obs, ax in zip(observables, axes.flatten()):
@@ -136,7 +138,14 @@ def plot_scatter(system_str, emu, design, cent_bin, observables):
                 if is_mult and transform_multiplicities:
                     y_emu = np.exp(y_emu) - 1.
                     y_true = np.exp(y_true) - 1.
-                #dy_emu = (np.diagonal(cov[obs, obs])**.5)[:,0]
+                    #dy_emu = (np.diagonal(cov[obs, obs])**.5)[:,0]
+
+                is_cum = ('cums' in obs)
+                if is_cum and transform_cumulants:
+                    power = transform_cumulants_powers[obs]
+                    y_emu = np.power(y_emu, 1./power)
+                    y_true = np.power(y_true, 1./power)
+
                 Y_true.append(y_true)
                 Y_emu.append(y_emu)
 
@@ -149,58 +158,92 @@ def plot_scatter(system_str, emu, design, cent_bin, observables):
                 if is_mult and transform_multiplicities:
                     y_emu = np.exp(y_emu) - 1.
                     y_true = np.exp(y_true) - 1.
-                #dy_emu = (np.diagonal(cov[obs, obs])**.5)[:,0]
+                    #dy_emu = (np.diagonal(cov[obs, obs])**.5)[:,0]
+
+                is_cum = ('cums' in obs)
+                if is_cum and transform_cumulants:
+                    power = transform_cumulants_powers[obs]
+                    y_emu = np.power(y_emu, 1./power)
+                    y_true = np.power(y_true, 1./power)
+
                 if pt not in delete_design_pts_validation_set:
-                    #ax.scatter(y_true, y_emu, color='red')
                     Y_true.append(y_true)
                     Y_emu.append(y_emu)
 
         Y_true = np.array(Y_true)
         Y_emu = np.array(Y_emu)
-        ym, yM = np.min(Y_emu), np.max(Y_emu)
+        ym, yM = 0.95*np.min(Y_emu), 1.05*np.max(Y_emu)
         #h = ax.hist2d(Y_emu, Y_true, bins=31, cmap='coolwarm', range=[(ym, yM),(ym, yM)])
         ax.scatter(Y_emu, Y_true)
-        ym, yM = ym-(yM-ym)*.05, yM+(yM-ym)*.05
-        ax.plot([ym,yM],[ym,yM],'k--', zorder=100)
+        #ym, yM = ym-(yM-ym)*.05, yM+(yM-ym)*.05
+        #ax.plot([ym,yM],[ym,yM],'k--', zorder=100)
 
         ax.annotate(obs_tex_labels_2[obs], xy=(.05, .8), xycoords="axes fraction", fontsize=12)
-        for col in range(ncols):
-            axes[nrows - 1][col].set_xlabel("Emulated")
-        for row in range(nrows):
-            axes[row][ncols - 1].set_ylabel("Model Computed")
+        if ax.is_last_row():
+            ax.set_xlabel("Emulated")
+        if ax.is_first_col():
+            ax.set_ylabel("Model Computed")
         ax.ticklabel_format(scilimits=(2,1))
 
     plt.tight_layout(True)
-    plt.savefig('validation_plots/emulator_vs_model_' + system_str + '_' + idf_label_short[idf] + '.png', dpi=300)
+    plt.savefig('validation_plots/emulator_vs_model_' + system_str + '_' + idf_label_short[idf] + '.png', dpi=500)
 
 def plot_obs_correlations_scatter(system_str, design, cent_bin, observables):
     """
     Plot a scatter plot for each pair of observables predicted by design
     """
+    sns.set()
+    alpha=0.6
 
     print("Plotting scatter plot of observables correlation")
     ncols = len(observables)
     nrows = len(observables)
+    npt = 500 - len(delete_design_pts_set)
 
-    fig, axes = plt.subplots(figsize=(1.8*ncols,1.8*nrows), ncols=ncols, nrows=nrows)
+    nobs=8
+    ncols=nobs
+    nrows=nobs
+
+    observables=observables[:nobs]
+
+    fig, axes = plt.subplots(figsize=(3*ncols,3*nrows), ncols=ncols, nrows=nrows)
+    #for idf in [0, 1]:
     for row, obs1 in enumerate(observables):
-        y1 = [ validation_data[system_str][pt, idf][obs1]['mean'][cent_bin] \
-                    for pt, prm in enumerate(design.values) \
-                    if pt not in delete_design_pts_validation_set ]
         for col, obs2 in enumerate(observables):
-            y2 = [ validation_data[system_str][pt, idf][obs2]['mean'][cent_bin] \
-                        for pt, prm in enumerate(design.values) \
-                        if pt not in delete_design_pts_validation_set ]
 
+            if row > col:
+                x = []
+                y = []
+                for pt in range(npt):
+                    y.append( trimmed_model_data[system_str][pt, idf][obs1]['mean'][cent_bin] )
+                    x.append( trimmed_model_data[system_str][pt, idf][obs2]['mean'][cent_bin] )
 
-            axes[row][col].scatter(y1, y2)
-            if axes[row][col].is_first_col():
-                axes[row][col].set_ylabel(obs_tex_labels_2[obs1])
-            if axes[row][col].is_last_row():
-                axes[row][col].set_xlabel(obs_tex_labels_2[obs2])
+                cent_x = obs_cent_list[system_str][obs2][cent_bin]
+                cent_x_str = str(cent_x[0]) + '-' + str(cent_x[1]) + '%'
+                cent_y = obs_cent_list[system_str][obs1][cent_bin]
+                cent_y_str = str(cent_y[0]) + '-' + str(cent_y[1]) + '%'
+
+                axes[row,col].scatter(x, y, color='purple', alpha=0.6)
+                axes[row,col].set_xlabel(obs_tex_labels_2[obs2] + ' ' + cent_x_str)
+                axes[row,col].set_ylabel(obs_tex_labels_2[obs1] + ' ' + cent_y_str)
+            if row <= col:
+                x = []
+                y = []
+                for pt in range(npt):
+                    x.append( trimmed_model_data[system_str][pt, idf][obs2]['mean'][cent_bin] )
+                    y.append( trimmed_model_data[system_str][pt, idf][obs1]['mean'][cent_bin+1] )
+
+                cent_x = obs_cent_list[system_str][obs2][cent_bin]
+                cent_x_str = str(cent_x[0]) + '-' + str(cent_x[1]) + '%'
+                cent_y = obs_cent_list[system_str][obs1][cent_bin+1]
+                cent_y_str = str(cent_y[0]) + '-' + str(cent_y[1]) + '%'
+
+                axes[row,col].scatter(x, y, color='orange', alpha=0.6)
+                axes[row,col].set_xlabel(obs_tex_labels_2[obs2] + ' ' + cent_x_str)
+                axes[row,col].set_ylabel(obs_tex_labels_2[obs1] + ' ' + cent_y_str)
 
     plt.tight_layout(True)
-    plt.savefig('validation_plots/obs_correlations_' + system_str + '_' + idf_label_short[idf] + '.png', dpi=300)
+    plt.savefig('validation_plots/obs_correlations_' + system_str + '_' + idf_label_short[idf] + '.png', dpi=500)
 
 def plot_model_stat_uncertainty(system_str, design, cent_bin, observables, nrows, ncols):
     """
@@ -242,7 +285,7 @@ def plot_model_stat_uncertainty(system_str, design, cent_bin, observables, nrows
 
     #plt.suptitle('Distribution of model statistical error')
     plt.tight_layout(True)
-    plt.savefig('validation_plots/model_stat_errors.png', dpi=300)
+    plt.savefig('validation_plots/model_stat_errors.png', dpi=500)
 
 def closure_test_credibility_intervals(system_str, design):
     chain = Chain()

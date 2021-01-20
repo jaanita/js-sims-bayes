@@ -281,6 +281,8 @@ class Chain:
 
             for obs1, slc1 in self._slices[s]:
                 is_mult_1 = ('dN' in obs1) or ('dET' in obs1)
+                is_cum_1 = ('cums' in obs1)
+
                 if is_mult_1 and transform_multiplicities:
                     self._expt_y[s][slc1] = np.log(Yexp[s][obs1]['mean'][idf_pseduodata] + 1.)
                     dy1 = Yexp[s][obs1]['err'][idf_pseduodata] / (Yexp[s][obs1]['mean'][idf_pseduodata] + 1.)
@@ -288,10 +290,26 @@ class Chain:
                     self._expt_y[s][slc1] = Yexp[s][obs1]['mean'][idf_pseduodata]
                     dy1 = Yexp[s][obs1]['err'][idf_pseduodata]
 
+                if is_cum_1 and transform_cumulants:
+                    alpha = 1. / transform_cumulants_powers[obs1]
+                    self._expt_y[s][slc1] = np.power( Yexp[s][obs1]['mean'][idf_pseduodata], alpha)
+                    dy1 =  alpha * np.power( Yexp[s][obs1]['mean'][idf_pseduodata], alpha-1.) * Yexp[s][obs1]['err'][idf_pseduodata]
+                else :
+                    self._expt_y[s][slc1] = Yexp[s][obs1]['mean'][idf_pseduodata]
+                    dy1 = Yexp[s][obs1]['err'][idf_pseduodata]
+
                 for obs2, slc2 in self._slices[s]:
                     is_mult_2 = ('dN' in obs2) or ('dET' in obs2)
+                    is_cum_2 = ('cums' in obs2)
+
                     if is_mult_2 and transform_multiplicities:
                         dy2 = Yexp[s][obs2]['err'][idf_pseduodata] / (Yexp[s][obs2]['mean'][idf_pseduodata] + 1.)
+                    else :
+                        dy2 = Yexp[s][obs2]['err'][idf_pseduodata]
+
+                    if is_cum_2 and transform_cumulants:
+                        alpha = 1. / transform_cumulants_powers[obs2]
+                        dy2 = alpha * np.power(Yexp[s][obs2]['mean'][idf_pseduodata], alpha-1.) * Yexp[s][obs2]['err'][idf_pseduodata] 
                     else :
                         dy2 = Yexp[s][obs2]['err'][idf_pseduodata]
 

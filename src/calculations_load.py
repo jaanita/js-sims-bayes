@@ -20,21 +20,27 @@ for i, s in enumerate(system_strs):
     print("model_data.shape = " + str(ds.shape))
 
     # handle some Nans
-    """
+
     for pt in range(Ndesign): # loop over all design points
         for obs in active_obs_list[s]:
             values = np.array(ds[s][pt, idf][obs]['mean'])
             # delete Nan dataset
-            isnan = np.isnan(values)
-            if (np.sum(isnan) > 0) and (not pt in delete_design_pts_set):
-                print("WARNING : FOUND NAN IN MODEL DATA : (design pt , obs)"\
-                      +" = ( {:s} , {:s} )".format( str(pt), obs) )
+            #isnan = np.isnan(values)
+            #if (np.sum(isnan) > 0) and (not pt in delete_design_pts_set):
+            #    print("WARNING : FOUND NAN IN MODEL DATA : (design pt , obs)"\
+            #          +" = ( {:s} , {:s} )".format( str(pt), obs) )
                 #ds[s][pt, idf][obs]['mean'][isnan] = np.mean(values[np.logical_not(isnan)])
                 #transforming yield related observables
-                is_mult = ('dN' in obs) or ('dET' in obs)
-                if is_mult and transform_multiplicities:
-                    ds[s][pt, idf][obs]['mean'] = np.log(1.0 + values)
-    """
+            #is_mult = ('dN' in obs) or ('dET' in obs)
+            #if is_mult and transform_multiplicities:
+            #    ds[s][pt, idf][obs]['mean'] = np.log(1.0 + values)
+
+            is_cum = ('cums' in obs)
+            if is_cum and transform_cumulants:
+                alpha = 1./ transform_cumulants_powers[obs]
+                ds[s][pt, idf][obs]['mean'] = np.power(values, alpha)
+
+
     if Ndelete > 0:
         print("Design points which will be deleted from training : " \
                 + str( SystemsInfo[s]["design_remove_idx"] ) )
