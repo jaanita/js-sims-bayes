@@ -418,8 +418,6 @@ def _observables(posterior=False, ratio=False):
                 #Y = Ymodel[system][obs]['mean'][idf]
                 Y = Ymodel[system][:, idf][obs]['mean']
 
-            print(Y.shape)
-
             alpha = 0.4
             lw = 0.15
             color = 'blue'
