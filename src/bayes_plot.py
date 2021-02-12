@@ -344,6 +344,8 @@ obs_tex_labels_2 = {
                     'v42' : r'$v_4\{2\}$',
 }
 
+idf_color = {0 : 'blue', 1 : 'red', 2 : 'magenta', 3 : 'green'}
+
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     new_cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
@@ -371,6 +373,9 @@ def _observables(posterior=False, ratio=False):
     experimental data points.
 
     """
+
+    #sns.set()
+
     if posterior:
         print("Plotting observables drawn from posterior")
         chain = Chain(path=workdir/'mcmc'/'chain-idf-0_LHC_RHIC_PTEMCEE.hdf')
@@ -393,7 +398,7 @@ def _observables(posterior=False, ratio=False):
 
     highlight_sets =  []
     for system in system_strs:
-        fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(6,4), sharex=True)
+        fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(6,4), sharex=True)
         subaxes = axes.flatten()
         for obs, ax in zip(active_obs_list[system], subaxes):
             # sys labels
@@ -419,8 +424,8 @@ def _observables(posterior=False, ratio=False):
                 Y = Ymodel[system][:, idf][obs]['mean']
 
             alpha = 0.4
-            lw = 0.15
-            color = 'blue'
+            lw = 0.2
+            color = idf_color[idf]
             if posterior:
                 if ratio:
                     plt.suptitle('Combined System Posterior : Model/Experiment for Au-Au 0.2 TeV')
@@ -1723,8 +1728,7 @@ def viscous_posterior(plot_samples = False):
 
     T = np.linspace(0.135, 0.35, 200)
 
-    idf_CI_color = {0 : 'blue', 1 : 'red', 2 : 'green', 3 : 'magenta'}
-    color_CI = idf_CI_color[idf]
+    color_CI = idf_color[idf]
     if plot_samples:
         color_CI = 'gray'
 
@@ -2439,8 +2443,7 @@ def viscous_posterior_overlay():
 
     T = np.linspace(0.15, 0.35, 100)
 
-    idf_CI_color = {0 : 'blue', 1 : 'red', 2 : 'green', 3 : 'magenta'}
-    color_CI = idf_CI_color[idf]
+    color_CI = idf_color[idf]
 
     chain1 = Chain(path=workdir/'mcmc'/'chain-idf-0_LHC_RHIC_PTEMCEE.hdf')
     data1 = chain1.load_wo_reshape(thin=10)
@@ -2802,8 +2805,7 @@ def viscous_posterior_overlay_2():
 
     T = np.linspace(0.15, 0.35, 100)
 
-    idf_CI_color = {0 : 'blue', 1 : 'red', 2 : 'magenta', 3 : 'green'}
-    color_CI = idf_CI_color[idf]
+    color_CI = idf_color[idf]
 
     chain1 = Chain(path=workdir/'mcmc'/'chain-idf-0_LHC_RHIC_PTEMCEE.hdf')
     data1 = chain1.load_wo_reshape()
@@ -2906,8 +2908,7 @@ def viscous_posterior_overlay_3():
 
     T = np.linspace(0.15, 0.35, 100)
 
-    idf_CI_color = {0 : 'blue', 1 : 'red', 2 : 'magenta', 3 : 'green'}
-    color_CI = idf_CI_color[idf]
+    color_CI = idf_color[idf]
 
     chain1 = Chain(path=workdir/'mcmc'/'chain-idf-3_LHC_PTEMCEE_full_prior.hdf')
     data1 = chain1.load_wo_reshape(thin=1)
@@ -3029,8 +3030,7 @@ def freestream_time_posterior_overlay():
     e_R = 4.0 # GeV / fm^3
     e = np.linspace(e_R * 1e-1, e_R * 1e1, 1000)
 
-    idf_CI_color = {0 : 'blue', 1 : 'red', 2 : 'green', 3 : 'magenta'}
-    color_CI = idf_CI_color[idf]
+    color_CI = idf_color[idf]
 
     chain1 = Chain(path=workdir/'mcmc'/'chain-idf-0_LHC_RHIC_PTEMCEE.hdf')
     data1 = chain1.load_wo_reshape(thin=5)
@@ -3110,8 +3110,7 @@ def freestream_time_posterior():
     e_R = 4.0 # GeV / fm^3
     e = np.linspace(e_R * 1e-1, e_R * 1e1, 1000)
 
-    idf_CI_color = {0 : 'blue', 1 : 'red', 2 : 'green', 3 : 'magenta'}
-    color_CI = idf_CI_color[idf]
+    color_CI = idf_color[idf]
     label_idf = idf_label_short[idf]
 
     chain1 = Chain(path=workdir/'mcmc'/'chain-idf-{:d}_LHC_RHIC_PTEMCEE.hdf'.format(idf))
