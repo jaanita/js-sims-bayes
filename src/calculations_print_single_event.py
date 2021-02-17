@@ -1,5 +1,4 @@
-##!/usr/bin/env python3
-#
+#!/usr/bin/env python3
 import sys
 import numpy as np
 from collections.abc import Iterable
@@ -7,9 +6,11 @@ from collections.abc import Iterable
 
 # Input data format
 from configurations import *
-from calculations_file_format_single_event import result_dtype
+from calculations_file_format_single_event import return_result_dtype
 
 filename=sys.argv[1]
+
+result_dtype = return_result_dtype('ALICE')
 data = np.fromfile(filename, dtype=result_dtype)
 
 # Loop over data structure
@@ -31,7 +32,3 @@ def print_data_structure(data, structure):
                 print(tmp_struct[0],data[tmp_struct[0]])
 
 print_data_structure(data, result_dtype)
-
-
-
-
