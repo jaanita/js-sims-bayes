@@ -239,7 +239,7 @@ class Chain:
             if not set_common:
                 #right now the mixing parameters are harcoded, to be generalized later!
                 self.common_max = np.array(list(design_max[1:])+[1.]) # the last entry is max value for the mixing parameter \beta
-                self.common_min = np.array(list(design_min[1:])+[0.]) # the last value is the min. for the mixing parameter \beta 
+                self.common_min = np.array(list(design_min[1:])+[0.]) # the last value is the min. for the mixing parameter \beta
                 self.common_labels = list(labels[1:]) + [r'$\beta$']
                 self.common_ndim = len(self.common_max)
                 self.common_range = np.array([self.common_min,
@@ -353,50 +353,53 @@ class Chain:
         return { s: Trained_Emulators_all_df[s][idf].predict(X[:,self.sys_idx[s]], **kwargs) for s in system_strs }
 
 
-    def log_posterior(self, X, extra_std_prior_scale=0.001):
+    def log_posterior(self, X):
         """
         Evaluate the posterior at `X`.
 
-        `extra_std_prior_scale` is the scale parameter for the prior
-        distribution on the model sys error parameter:
-
-            prior ~ sigma^2 * exp(-sigma/scale)
-
         """
         X = np.array(X, copy=False, ndmin=2)
-        lp = np.zeros(X.shape[0])
+        #normalize the prior
+        lp = np.log( np.ones(X.shape[0]) / self.prior_volume )
+
         inside = np.all((X > self.min) & (X < self.max), axis=1)
         lp[~inside] = -np.inf
-        extra_std = X[inside, -1]
 
+        beta_mix = X[inside, -1] # the model mixture parameter
+        X_model = X[inside, :-1] # the physics model parameters (which exclude the mixing params)
         nsamples = np.count_nonzero(inside)
+
         if nsamples > 0:
-            pred = self._predict( X[inside], return_cov=True, extra_std=extra_std )
             for sys in system_strs:
-                nobs = self._expt_y[sys].size
-                # allocate difference (model - expt) and covariance arrays
-                dY = np.empty((nsamples, nobs))
-                cov = np.empty((nsamples, nobs, nobs))
+                loglike_by_model = np.zeros( (2, X_model.shape[0]) )
+                for idf_loc in [0, 1]:
+                    pred = self._predict_given_df( X_model, idf_loc, return_cov=True)
+                    nobs = self._expt_y[sys].size
+                    # allocate difference (model - expt) and covariance arrays
+                    dY = np.empty((nsamples, nobs))
+                    cov = np.empty((nsamples, nobs, nobs))
+                    Y_pred, cov_pred = pred[sys]
 
-                Y_pred, cov_pred = pred[sys]
+                    # copy predictive mean and covariance into allocated arrays
+                    for obs1, slc1 in self._slices[sys]:
+                        dY[:, slc1] = Y_pred[obs1] - self._expt_y[sys][slc1]
+                        for obs2, slc2 in self._slices[sys]:
+                            cov[:, slc1, slc2] = cov_pred[obs1, obs2]
 
-                # copy predictive mean and covariance into allocated arrays
-                for obs1, slc1 in self._slices[sys]:
-                    dY[:, slc1] = Y_pred[obs1] - self._expt_y[sys][slc1]
-                    for obs2, slc2 in self._slices[sys]:
-                        cov[:, slc1, slc2] = cov_pred[obs1, obs2]
+                    # add expt cov to model cov
+                    cov += self._expt_cov[sys]
 
-                # add expt cov to model cov
-                cov += self._expt_cov[sys]
+                    # compute normalized log likelihood at each point
+                    loglike_by_model[idf_loc, :] = list(map(normed_mvn_loglike, dY, cov))
 
-                # compute log likelihood at each point, w/o normalization
-                lp[inside] += list(map(mvn_loglike, dY, cov))
-
-            # add prior for extra_std (model sys error)
-            lp[inside] += 2*np.log(extra_std) - extra_std/extra_std_prior_scale
-
+                #the Gaussian mixture likelihood
+                arg1 = np.log(beta_mix) + loglike_by_model[0]
+                arg2 = np.log(1. - beta_mix) + loglike_by_model[1]
+                gmm_loglike = np.logaddexp(arg1, arg2)
+                lp[inside] += gmm_loglike
 
         return lp
+
 
     def log_prior(self, X):
         """
@@ -436,7 +439,7 @@ class Chain:
             for sys in system_strs:
                 loglike_by_model = np.zeros( (2, X_model.shape[0]) )
                 for idf_loc in [0, 1]:
-                    pred = self._predict_given_df( X_model[inside], idf_loc, return_cov=True)
+                    pred = self._predict_given_df( X_model, idf_loc, return_cov=True)
                     nobs = self._expt_y[sys].size
                     # allocate difference (model - expt) and covariance arrays
                     dY = np.empty((nsamples, nobs))
@@ -450,23 +453,20 @@ class Chain:
                         for obs2, slc2 in self._slices[sys]:
                             cov[:, slc1, slc2] = cov_pred[obs1, obs2]
 
-
                     # add expt cov to model cov
                     cov += self._expt_cov[sys]
 
                     # compute normalized log likelihood at each point
                     loglike_by_model[idf_loc, :] = list(map(normed_mvn_loglike, dY, cov))
-                
+
                 #the Gaussian mixture likelihood
                 arg1 = np.log(beta_mix) + loglike_by_model[0]
                 arg2 = np.log(1. - beta_mix) + loglike_by_model[1]
-                gmm_loglike = np.logaddexp(arg1, arg2) 
-                    
+                gmm_loglike = np.logaddexp(arg1, arg2)
+
                 lp[inside] += gmm_loglike
 
-
         return lp
-
 
     def random_pos(self, n=1):
         """
