@@ -102,10 +102,16 @@ class Design:
         # 5.02 TeV has ~1.2x particle production as 2.76 TeV
         # [https://inspirehep.net/record/1410589]
         norm_range = {
-             200: (4., 9.),
-            2760: (10., 20.),
-            5020: (15., 25.),
-            5440: {15., 25.}
+            7.7: (1.,3.),
+            11.5: (1.,3.),
+            14.5: (1.,3.),
+            27.0: (1.,3.),
+            39.0: (1.,3.),
+            62.4: (1.,3.),
+             200.0: (4., 9.),
+            2760.0: (10., 20.),
+            5020.0: (15., 25.),
+            5440.0: {15., 25.}
         }[self.beam_energy]
 
         #any keys which are uncommented will be sampled / part of the design matrix
@@ -149,16 +155,28 @@ class Design:
 
         #define different seeds for each system
         main_seeds = {
-                    'AuAu-200' : 450829120,
-                    'PbPb-2760': 450829121,
-                    'PbPb-5020': 450829122,
-                    'XeXe-5440': 450829123,
+                    'AuAu-7.7' : 450829114,
+                    'AuAu-11.5' : 450829115,
+                    'AuAu-14.5' : 450829116,
+                    'AuAu-27.0' : 450829117,
+                    'AuAu-39.0' : 450829118,
+                    'AuAu-62.4' : 450829119,
+                    'AuAu-200.0' : 450829120,
+                    'PbPb-2760.0': 450829121,
+                    'PbPb-5020.0': 450829122,
+                    'XeXe-5440.0': 450829123,
                     }
         validation_seeds = {
-                    'AuAu-200' : 751783496,
-                    'PbPb-2760': 751783497,
-                    'PbPb-5020': 751783498,
-                    'XeXe-5440': 751783499,
+                    'AuAu-7.7' : 751783490,
+                    'AuAu-11.5' : 751783491,
+                    'AuAu-14.5' : 751783492,
+                    'AuAu-27.0' : 751783493,
+                    'AuAu-39.0' : 751783494,
+                    'AuAu-62.4' : 751783495,
+                    'AuAu-200.0' : 751783496,
+                    'PbPb-2760.0': 751783497,
+                    'PbPb-5020.0': 751783498,
+                    'XeXe-5440.0': 751783499,
                     }
 
         #The seed is fixed here, which fixes the design points
@@ -226,7 +244,8 @@ class Design:
                 target = self.projectiles,
                 sqrts = self.beam_energy,
                 inel_nucleon_cross_section = { # sqrt(s) [GeV] : sigma_NN [fm^2]
-                                            200: 4.3,  2760: 6.4,  5020: 7.0, 5440: 7.1
+                            7.7: 3.12, 11.5: 3.2, 14.5: 3.25, 27.0: 3.32, 39.0: 3.43, 62.4: 3.6, 
+                            200.0: 4.3, 2760.0: 6.4,  5020.0: 7.0, 5440.0: 7.1
                                              }[self.beam_energy],
                 trento_normalization = kwargs['norm'],
                 trento_reduced_thickness = kwargs['trento_p'],
