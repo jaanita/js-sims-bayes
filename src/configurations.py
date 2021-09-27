@@ -23,10 +23,17 @@ dir_obs_exp = "HIC_experimental_data"
 ### USEFUL LABELS / DICTIONARIES ###
 ####################################
 #only using data from these experimental collabs
-expt_for_system = { 'Au-Au-200' : 'STAR',
-                    'Pb-Pb-2760' : 'ALICE',
-                    'Pb-Pb-5020' : 'ALICE',
-                    'Xe-Xe-5440' : 'ALICE',
+expt_for_system = { 
+                    'Au-Au-7.7' : 'STAR',
+                    'Au-Au-11.5' : 'STAR',
+                    'Au-Au-14.5' : 'STAR',
+                    'Au-Au-27.0' : 'STAR',
+                    'Au-Au-39.0' : 'STAR',
+                    'Au-Au-62.4' : 'STAR',
+                    'Au-Au-200.0' : 'STAR',
+                    'Pb-Pb-2760.0' : 'ALICE',
+                    'Pb-Pb-5020.0' : 'ALICE',
+                    'Xe-Xe-5440.0' : 'ALICE',
                     }
 
 #for STAR we have measurements of pi+ dN/dy, k+ dN/dy etc... so we need to scale them by 2 after reading in
@@ -63,12 +70,19 @@ print("Using idf = " + str(idf) + " : " + idf_label[idf])
 
 #the Collision systems
 systems = [
-        ('Pb', 'Pb', 2760),
-        ('Au', 'Au', 200),
-        #('Pb', 'Pb', 5020),
-        #('Xe', 'Xe', 5440)
+        ('Au', 'Au', 7.7),
+        ('Au', 'Au', 11.5),
+        ('Au', 'Au', 14.5),
+        ('Au', 'Au', 27.0),
+        ('Au', 'Au', 39.0),
+        ('Au', 'Au', 62.4),
+        ('Au', 'Au', 200.0),
+        ('Pb', 'Pb', 2760.0),
+        ('Au', 'Au', 200.0),
+        ('Pb', 'Pb', 5020.0),
+        ('Xe', 'Xe', 5440.0)
         ]
-system_strs = ['{:s}-{:s}-{:d}'.format(*s) for s in systems]
+system_strs = ['{:s}-{:s}-{:1f}'.format(*s) for s in systems]
 num_systems = len(system_strs)
 
 #these are problematic points for Pb Pb 2760 and Au Au 200 with 500 design points
@@ -102,21 +116,21 @@ class systems_setting(dict):
         super().__setitem__("proj", A)
         super().__setitem__("targ", B)
         super().__setitem__("sqrts", sqrts)
-        sysdir = "/design_pts_{:s}_{:s}_{:d}_production".format(A, B, sqrts)
+        sysdir = "/design_pts_{:s}_{:s}_{:1f}_production".format(A, B, sqrts)
         super().__setitem__("main_design_file",
-            design_dir+sysdir+'/design_points_main_{:s}{:s}-{:d}.dat'.format(A, B, sqrts)
+            design_dir+sysdir+'/design_points_main_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts)
             )
         super().__setitem__("main_range_file",
-            design_dir+sysdir+'/design_ranges_main_{:s}{:s}-{:d}.dat'.format(A, B, sqrts)
+            design_dir+sysdir+'/design_ranges_main_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts)
             )
         super().__setitem__("validation_design_file",
-            design_dir+sysdir+'/design_points_validation_{:s}{:s}-{:d}.dat'.format(A, B, sqrts)
+            design_dir+sysdir+'/design_points_validation_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts)
             )
         super().__setitem__("validation_range_file",
-            design_dir+sysdir+'//design_ranges_validation_{:s}{:s}-{:d}.dat'.format(A, B, sqrts)
+            design_dir+sysdir+'//design_ranges_validation_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts)
             )
         try:
-            with open(design_dir+sysdir+'/design_labels_{:s}{:s}-{:d}.dat'.format(A, B, sqrts), 'r') as f:
+            with open(design_dir+sysdir+'/design_labels_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts), 'r') as f:
                 labels = [r""+line[:-1] for line in f]
             super().__setitem__("labels", labels)
         except:
@@ -139,35 +153,83 @@ class systems_setting(dict):
         else:
             super().__setitem__(key, value)
 
-SystemsInfo = {"{:s}-{:s}-{:d}".format(*s): systems_setting(*s) \
+SystemsInfo = {"{:s}-{:s}-{:1f}".format(*s): systems_setting(*s) \
                 for s in systems
                }
 
-if 'Pb-Pb-2760' in system_strs:
-    SystemsInfo["Pb-Pb-2760"]["run_id"] = "production_500pts_Pb_Pb_2760"
-    SystemsInfo["Pb-Pb-2760"]["n_design"] = 500
-    SystemsInfo["Pb-Pb-2760"]["n_validation"] = 100
-    SystemsInfo["Pb-Pb-2760"]["design_remove_idx"]=list(delete_design_pts_set)
-    SystemsInfo["Pb-Pb-2760"]["npc"]=10
-    SystemsInfo["Pb-Pb-2760"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Pb-Pb-2760.dat'
+if 'Pb-Pb-2760.0' in system_strs:
+    SystemsInfo["Pb-Pb-2760.0"]["run_id"] = "production_500pts_Pb_Pb_2760.0"
+    SystemsInfo["Pb-Pb-2760.0"]["n_design"] = 500
+    SystemsInfo["Pb-Pb-2760.0"]["n_validation"] = 100
+    SystemsInfo["Pb-Pb-2760.0"]["design_remove_idx"]=list(delete_design_pts_set)
+    SystemsInfo["Pb-Pb-2760.0"]["npc"]=10
+    SystemsInfo["Pb-Pb-2760.0"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Pb-Pb-2760.dat'
 
-if 'Au-Au-200' in system_strs:
-    SystemsInfo["Au-Au-200"]["run_id"] = "production_500pts_Au_Au_200"
-    SystemsInfo["Au-Au-200"]["n_design"] = 500
-    SystemsInfo["Au-Au-200"]["n_validation"] = 100
-    SystemsInfo["Au-Au-200"]["design_remove_idx"]=list(delete_design_pts_set)
-    SystemsInfo["Au-Au-200"]["npc"] = 6
-    SystemsInfo["Au-Au-200"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-200.dat'
+if 'Au-Au-200.0' in system_strs:
+    SystemsInfo["Au-Au-200.0"]["run_id"] = "production_500pts_Au_Au_200.0"
+    SystemsInfo["Au-Au-200.0"]["n_design"] = 500
+    SystemsInfo["Au-Au-200.0"]["n_validation"] = 100
+    SystemsInfo["Au-Au-200.0"]["design_remove_idx"]=list(delete_design_pts_set)
+    SystemsInfo["Au-Au-200.0"]["npc"] = 6
+    SystemsInfo["Au-Au-200.0"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-200.dat'
 
-if 'Pb-Pb-5020' in system_strs:
-    SystemsInfo["Pb-Pb-5020"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Pb-Pb-5020.dat'
+if 'Au-Au-62.4' in system_strs:
+    SystemsInfo["Au-Au-62.4"]["run_id"] = "production_500pts_Au_Au_62.4"
+    SystemsInfo["Au-Au-62.4"]["n_design"] = 500
+    SystemsInfo["Au-Au-62.4"]["n_validation"] = 100
+    #SystemsInfo["Au-Au-62.4"]["design_remove_idx"]=list(delete_design_pts_set)
+    SystemsInfo["Au-Au-62.4"]["npc"] = 6
+    SystemsInfo["Au-Au-62.4"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-62.4.dat'
 
-if 'Xe-Xe-5440' in system_strs:
-    SystemsInfo["Xe-Xe-5440"]["run_id"] = "production_1000pts_Xe_Xe_5440"
-    SystemsInfo["Xe-Xe-5440"]["n_design"] = 1000
-    SystemsInfo["Xe-Xe-5440"]["n_validation"] = 0
-    SystemsInfo["Xe-Xe-5440"]["design_remove_idx"]=list(delete_design_pts_set_Xe)
-    SystemsInfo["Xe-Xe-5440"]["npc"] = 5
+if 'Au-Au-39.0' in system_strs:
+    SystemsInfo["Au-Au-39.0"]["run_id"] = "production_500pts_Au_Au_39.0"
+    SystemsInfo["Au-Au-39.0"]["n_design"] = 500
+    SystemsInfo["Au-Au-39.0"]["n_validation"] = 100
+    #SystemsInfo["Au-Au-39.0"]["design_remove_idx"]=list(delete_design_pts_set)
+    SystemsInfo["Au-Au-39.0"]["npc"] = 6
+    SystemsInfo["Au-Au-39.0"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-39.0.dat'
+    
+if 'Au-Au-27.0' in system_strs:
+    SystemsInfo["Au-Au-27.0"]["run_id"] = "production_500pts_Au_Au_27.0"
+    SystemsInfo["Au-Au-27.0"]["n_design"] = 500
+    SystemsInfo["Au-Au-27.0"]["n_validation"] = 100
+    #SystemsInfo["Au-Au-27.0"]["design_remove_idx"]=list(delete_design_pts_set)
+    SystemsInfo["Au-Au-27.0"]["npc"] = 6
+    SystemsInfo["Au-Au-27.0"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-27.0.dat'
+ 
+if 'Au-Au-14.5' in system_strs:
+    SystemsInfo["Au-Au-14.5"]["run_id"] = "production_500pts_Au_Au_14.5"
+    SystemsInfo["Au-Au-14.5"]["n_design"] = 500
+    SystemsInfo["Au-Au-14.5"]["n_validation"] = 100
+    #SystemsInfo["Au-Au-14.5"]["design_remove_idx"]=list(delete_design_pts_set)
+    SystemsInfo["Au-Au-14.5"]["npc"] = 6
+    SystemsInfo["Au-Au-14.5"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-14.5.dat'
+ 
+if 'Au-Au-11.5' in system_strs:
+    SystemsInfo["Au-Au-11.5"]["run_id"] = "production_500pts_Au_Au_11.5"
+    SystemsInfo["Au-Au-11.5"]["n_design"] = 500
+    SystemsInfo["Au-Au-11.5"]["n_validation"] = 100
+    #SystemsInfo["Au-Au-11.5"]["design_remove_idx"]=list(delete_design_pts_set)
+    SystemsInfo["Au-Au-11.5"]["npc"] = 6
+    SystemsInfo["Au-Au-11.5"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-11.5.dat'
+
+if 'Au-Au-7.7' in system_strs:
+    SystemsInfo["Au-Au-7.7"]["run_id"] = "production_500pts_Au_Au_7.7"
+    SystemsInfo["Au-Au-7.7"]["n_design"] = 500
+    SystemsInfo["Au-Au-7.7"]["n_validation"] = 100
+    #SystemsInfo["Au-Au-7.7"]["design_remove_idx"]=list(delete_design_pts_set)
+    SystemsInfo["Au-Au-7.7"]["npc"] = 6
+    SystemsInfo["Au-Au-7.7"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-7.7.dat'    
+
+if 'Pb-Pb-5020.0' in system_strs:
+    SystemsInfo["Pb-Pb-5020.0"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Pb-Pb-5020.dat'
+
+if 'Xe-Xe-5440.0' in system_strs:
+    SystemsInfo["Xe-Xe-5440.0"]["run_id"] = "production_1000pts_Xe_Xe_5440.0"
+    SystemsInfo["Xe-Xe-5440.0"]["n_design"] = 1000
+    SystemsInfo["Xe-Xe-5440.0"]["n_validation"] = 0
+    SystemsInfo["Xe-Xe-5440.0"]["design_remove_idx"]=list(delete_design_pts_set_Xe)
+    SystemsInfo["Xe-Xe-5440.0"]["npc"] = 5
     #SystemsInfo["Xe-Xe-5440"]["MAP_obs_file"]=str(workdir/'model_calculations/MAP') + '/' + idf_label_short[idf] + '/Obs/obs_Au-Au-200.dat'
 
 print("SystemsInfo = ")
