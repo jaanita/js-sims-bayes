@@ -11,9 +11,12 @@ central_PHENIX_cent_bins = np.array( [ [0,5],[5,10],[10,15],[15,20],[20,30],[30,
 ALICE_cent_bins = np.array( [ [0,5],[5,10],[10,20],[20,30],[30,40],[40,50],[50,60],[60,70] ] ) # 8 bins
 #Tmunu_cents = ALICE_cent_bins
 
+STAR_bins = np.array( [ [0,5],[5,10],[10,20],[20,40],[40,60],[60,80] ] ) # 6 bins
+STAR_bins_14 = np.array( [ [0,5],[5,10],[10,20],[20,30],[30,40],[40,60],[60,80] ] ) # 7 bins
+
 #the observables which match the centrality-averaged model data
 obs_cent_list = {
-'Pb-Pb-2760': {
+'Pb-Pb-2760.0': {
 	'dNch_deta' : ALICE_cent_bins,
 	'dET_deta' : np.array([[0, 2.5], [2.5, 5], [5, 7.5], [7.5, 10],
 		                   [10, 12.5], [12.5, 15], [15, 17.5], [17.5, 20],
@@ -49,7 +52,7 @@ obs_cent_list = {
 	#'Tmunu9' : Tmunu_cents
     },
 
-'Pb-Pb-5020': {
+'Pb-Pb-5020.0': {
 	'dNch_deta' : np.array( [ [0,2.5],[2.5,5],[5,7.5],[7.5,10],[10,20],[20,30],[30,40],[40,50],[50,60],[60,70] ] ),
 	'dN_dy_pion'   : ALICE_cent_bins,
 	'dN_dy_kaon'   : ALICE_cent_bins,
@@ -64,13 +67,13 @@ obs_cent_list = {
 	'v42' : np.array([[0,5],[5,10],[10,20],[20,30],[30,40],[40,50]]), # 6 bins
     },
 
-'Xe-Xe-5440': {
+'Xe-Xe-5440.0': {
 	'dNch_deta' : np.array( [ [0,2.5],[2.5,5],[5,7.5],[7.5,10],[10,20],[20,30],[30,40],[40,50],[50,60],[60,70] ] ),
 	'v22' : ALICE_cent_bins,
 	'v32' : ALICE_cent_bins,
     },
 
-'Au-Au-200': {
+'Au-Au-200.0': {
 	'dN_dy_pion'   : central_STAR_cent_bins,
 	'dN_dy_kaon'   : central_STAR_cent_bins,
 	#current calculations use STAR centrality bins
@@ -81,13 +84,92 @@ obs_cent_list = {
 	'mean_pT_proton' : central_STAR_cent_bins,
 	'v22' : central_STAR_cent_bins,
 	'v32' : central_STAR_cent_bins,
+    },
+
+'Au-Au-62.4': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },
+'Au-Au-39.0': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },
+'Au-Au-27.0': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },
+'Au-Au-14.5': {
+	'dNch_deta' : STAR_bins_14,
+	'dN_dy_pion'   : STAR_bins_14,
+	'dN_dy_kaon'   : STAR_bins_14,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins_14,
+	'mean_pT_pion'   : STAR_bins_14,
+	'mean_pT_kaon'   : STAR_bins_14,
+	'mean_pT_proton' : STAR_bins_14,
+	'v22' : STAR_bins_14,
+	'v32' : STAR_bins_14,
+    },
+'Au-Au-11.5': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },
+'Au-Au-7.7': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
     },
 }
 
 
 #the observables which will be used for parameter estimation
 calibration_obs_cent_list = {
-'Pb-Pb-2760': {
+'Pb-Pb-2760.0': {
 	'dNch_deta' : ALICE_cent_bins,
 	'dET_deta' : np.array([[0, 2.5], [2.5, 5], [5, 7.5], [7.5, 10],
 		                   [10, 12.5], [12.5, 15], [15, 17.5], [17.5, 20],
@@ -123,7 +205,7 @@ calibration_obs_cent_list = {
 	#'Tmunu9' : Tmunu_cents
     },
 
-'Pb-Pb-5020': {
+'Pb-Pb-5020.0': {
 	'dNch_deta' : np.array( [ [0,2.5],[2.5,5],[5,7.5],[7.5,10],[10,20],[20,30],[30,40],[40,50],[50,60],[60,70] ] ),
 	'dN_dy_pion'   : ALICE_cent_bins,
 	'dN_dy_kaon'   : ALICE_cent_bins,
@@ -138,13 +220,13 @@ calibration_obs_cent_list = {
 	'v42' : np.array([[0,5],[5,10],[10,20],[20,30],[30,40],[40,50]]), # 6 bins
     },
 
-'Xe-Xe-5440': {
+'Xe-Xe-5440.0': {
 	'dNch_deta' : np.array( [ [0,2.5],[2.5,5],[5,7.5],[7.5,10],[10,20],[20,30],[30,40],[40,50],[50,60],[60,70] ] ),
 	'v22' : ALICE_cent_bins,
 	'v32' : np.array( [ [0,5],[5,10],[10,20],[20,30],[30,40],[40,50],[50,60] ] ),
     },
 
-'Au-Au-200': {
+'Au-Au-200.0': {
 	'dN_dy_pion'   : central_STAR_cent_bins,
 	'dN_dy_kaon'   : central_STAR_cent_bins,
 	#current calculations use STAR centrality bins
@@ -156,11 +238,90 @@ calibration_obs_cent_list = {
 	'v22' : central_STAR_cent_bins,
 	'v32' : central_STAR_cent_bins,
     },
+'Au-Au-62.4': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },
+'Au-Au-39.0': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },
+'Au-Au-27.0': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },
+'Au-Au-14.5': {
+	'dNch_deta' : STAR_bins_14,
+	'dN_dy_pion'   : STAR_bins_14,
+	'dN_dy_kaon'   : STAR_bins_14,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins_14,
+	'mean_pT_pion'   : STAR_bins_14,
+	'mean_pT_kaon'   : STAR_bins_14,
+	'mean_pT_proton' : STAR_bins_14,
+	'v22' : STAR_bins_14,
+	'v32' : STAR_bins_14,
+    },
+'Au-Au-11.5': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },
+'Au-Au-7.7': {
+	'dNch_deta' : STAR_bins,
+	'dN_dy_pion'   : STAR_bins,
+	'dN_dy_kaon'   : STAR_bins,
+	#current calculations use STAR centrality bins
+	#NOTE that the model calculations need to be re-averaged using the PHENIX cent bins if we want to include proton
+	'dN_dy_proton' : STAR_bins,
+	'mean_pT_pion'   : STAR_bins,
+	'mean_pT_kaon'   : STAR_bins,
+	'mean_pT_proton' : STAR_bins,
+	'v22' : STAR_bins,
+	'v32' : STAR_bins,
+    },	
+
 }
 
 #these just define some 'reasonable' ranges for plotting purposes
 obs_range_list = {
-    'Pb-Pb-2760': {
+    'Pb-Pb-2760.0': {
 		'dNch_deta': [0,2000],
 		'dET_deta': [0,2200],
 		'dN_dy_pion': [0,1700],
@@ -177,7 +338,109 @@ obs_range_list = {
 		'v32': [0,0.1],
 		'v42': [0,0.1]
     },
-	'Au-Au-200': {
+	'Au-Au-200.0': {
+		'dNch_deta': [0,1000],
+		'dET_deta': [0,1200],
+		'dN_dy_pion': [0,800],
+		'dN_dy_kaon': [0,120],
+		'dN_dy_proton': [0,40],
+		'dN_dy_Lambda': [0,40],
+		'dN_dy_Omega': [0,2],
+		'dN_dy_Xi': [0,10],
+		'mean_pT_pion': [0,1],
+		'mean_pT_kaon': [0,1.5],
+		'mean_pT_proton': [0,2],
+		'pT_fluct': [0,0.05],
+		'v22': [0,0.16],
+		'v32': [0,0.1],
+		'v42': [0,0.1]
+    },
+	'Au-Au-62.4': {
+		'dNch_deta': [0,1000],
+		'dET_deta': [0,1200],
+		'dN_dy_pion': [0,800],
+		'dN_dy_kaon': [0,120],
+		'dN_dy_proton': [0,40],
+		'dN_dy_Lambda': [0,40],
+		'dN_dy_Omega': [0,2],
+		'dN_dy_Xi': [0,10],
+		'mean_pT_pion': [0,1],
+		'mean_pT_kaon': [0,1.5],
+		'mean_pT_proton': [0,2],
+		'pT_fluct': [0,0.05],
+		'v22': [0,0.16],
+		'v32': [0,0.1],
+		'v42': [0,0.1]
+    },
+	'Au-Au-39.0': {
+		'dNch_deta': [0,1000],
+		'dET_deta': [0,1200],
+		'dN_dy_pion': [0,800],
+		'dN_dy_kaon': [0,120],
+		'dN_dy_proton': [0,40],
+		'dN_dy_Lambda': [0,40],
+		'dN_dy_Omega': [0,2],
+		'dN_dy_Xi': [0,10],
+		'mean_pT_pion': [0,1],
+		'mean_pT_kaon': [0,1.5],
+		'mean_pT_proton': [0,2],
+		'pT_fluct': [0,0.05],
+		'v22': [0,0.16],
+		'v32': [0,0.1],
+		'v42': [0,0.1]
+    },
+	'Au-Au-27.0': {
+		'dNch_deta': [0,1000],
+		'dET_deta': [0,1200],
+		'dN_dy_pion': [0,800],
+		'dN_dy_kaon': [0,120],
+		'dN_dy_proton': [0,40],
+		'dN_dy_Lambda': [0,40],
+		'dN_dy_Omega': [0,2],
+		'dN_dy_Xi': [0,10],
+		'mean_pT_pion': [0,1],
+		'mean_pT_kaon': [0,1.5],
+		'mean_pT_proton': [0,2],
+		'pT_fluct': [0,0.05],
+		'v22': [0,0.16],
+		'v32': [0,0.1],
+		'v42': [0,0.1]
+    },
+	'Au-Au-14.5': {
+		'dNch_deta': [0,1000],
+		'dET_deta': [0,1200],
+		'dN_dy_pion': [0,800],
+		'dN_dy_kaon': [0,120],
+		'dN_dy_proton': [0,40],
+		'dN_dy_Lambda': [0,40],
+		'dN_dy_Omega': [0,2],
+		'dN_dy_Xi': [0,10],
+		'mean_pT_pion': [0,1],
+		'mean_pT_kaon': [0,1.5],
+		'mean_pT_proton': [0,2],
+		'pT_fluct': [0,0.05],
+		'v22': [0,0.16],
+		'v32': [0,0.1],
+		'v42': [0,0.1]
+    },
+	'Au-Au-11.5': {
+		'dNch_deta': [0,1000],
+		'dET_deta': [0,1200],
+		'dN_dy_pion': [0,800],
+		'dN_dy_kaon': [0,120],
+		'dN_dy_proton': [0,40],
+		'dN_dy_Lambda': [0,40],
+		'dN_dy_Omega': [0,2],
+		'dN_dy_Xi': [0,10],
+		'mean_pT_pion': [0,1],
+		'mean_pT_kaon': [0,1.5],
+		'mean_pT_proton': [0,2],
+		'pT_fluct': [0,0.05],
+		'v22': [0,0.16],
+		'v32': [0,0.1],
+		'v42': [0,0.1]
+    },
+	'Au-Au-7.7': {
 		'dNch_deta': [0,1000],
 		'dET_deta': [0,1200],
 		'dN_dy_pion': [0,800],
