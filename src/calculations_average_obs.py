@@ -311,10 +311,10 @@ def load_and_compute(inputfile, system, specify_idf=None):
                     pass
         """
 
-        from bins_and_cuts import ALICE_cent_bins
+        from bins_and_cuts import STAR_bins
 
         # pT differential vn
-        cenb = ALICE_cent_bins
+        cenb = STAR_bins
         from calculations_file_format_single_event import Qn_diff_pT_cuts
         pTbins = []
         for i in range( len(Qn_diff_pT_cuts) - 1 ):
@@ -336,7 +336,7 @@ def load_and_compute(inputfile, system, specify_idf=None):
 
         #pid dN/dpT
         for s,_ in Qn_species:
-            cenb = ALICE_cent_bins
+            cenb = STAR_bins
             info = calculate_dNdpT(res, expt_type, cenb, idf, s)
 
             # instead of saving dN/dpT to entry (changing bayes_dtype) ...
