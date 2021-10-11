@@ -116,21 +116,21 @@ class systems_setting(dict):
         super().__setitem__("proj", A)
         super().__setitem__("targ", B)
         super().__setitem__("sqrts", sqrts)
-        sysdir = "/design_pts_{:s}_{:s}_{:1f}_production".format(A, B, sqrts)
+        sysdir = "/design_pts_{:s}_{:s}_{:.1f}_production".format(A, B, sqrts)
         super().__setitem__("main_design_file",
-            design_dir+sysdir+'/design_points_main_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts)
+            design_dir+sysdir+'/design_points_main_{:s}{:s}-{:.1f}.dat'.format(A, B, sqrts)
             )
         super().__setitem__("main_range_file",
-            design_dir+sysdir+'/design_ranges_main_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts)
+            design_dir+sysdir+'/design_ranges_main_{:s}{:s}-{:.1f}.dat'.format(A, B, sqrts)
             )
         super().__setitem__("validation_design_file",
-            design_dir+sysdir+'/design_points_validation_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts)
+            design_dir+sysdir+'/design_points_validation_{:s}{:s}-{:.1f}.dat'.format(A, B, sqrts)
             )
         super().__setitem__("validation_range_file",
-            design_dir+sysdir+'//design_ranges_validation_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts)
+            design_dir+sysdir+'//design_ranges_validation_{:s}{:s}-{:.1f}.dat'.format(A, B, sqrts)
             )
         try:
-            with open(design_dir+sysdir+'/design_labels_{:s}{:s}-{:1f}.dat'.format(A, B, sqrts), 'r') as f:
+            with open(design_dir+sysdir+'/design_labels_{:s}{:s}-{:.1f}.dat'.format(A, B, sqrts), 'r') as f:
                 labels = [r""+line[:-1] for line in f]
             super().__setitem__("labels", labels)
         except:
