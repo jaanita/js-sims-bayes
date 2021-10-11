@@ -82,7 +82,7 @@ systems = [
         ('Pb', 'Pb', 5020.0),
         ('Xe', 'Xe', 5440.0)
         ]
-system_strs = ['{:s}-{:s}-{:1f}'.format(*s) for s in systems]
+system_strs = ['{:s}-{:s}-{:.1f}'.format(*s) for s in systems]
 num_systems = len(system_strs)
 
 #these are problematic points for Pb Pb 2760 and Au Au 200 with 500 design points
