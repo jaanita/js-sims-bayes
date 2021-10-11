@@ -276,8 +276,8 @@ set_exp_error_to_zero = False
 # will be multiplied by the corresponding factor.
 change_exp_error = False
 change_exp_error_vals = {
-                        'Au-Au-200': {},
-                        'Pb-Pb-2760' : {'dN_dy_proton' : 1.e-1, 'mean_pT_proton' : 1.e-1}
+                        'Au-Au-200.0': {},
+                        'Pb-Pb-2760.0' : {'dN_dy_proton' : 1.e-1, 'mean_pT_proton' : 1.e-1}
                         }
 
 #if this switch is turned on, some parameters will be fixed
@@ -352,12 +352,12 @@ active_obs_list = {
 }
 
 for s in system_strs:
-    if s == 'Au-Au-200':
+    if s == 'Au-Au-200.0':
         #exluding STAR proton yield/mean pT from fit
         active_obs_list[s].remove('dN_dy_proton')
         active_obs_list[s].remove('mean_pT_proton')
 
-    if s == 'Pb-Pb-2760':
+    if s == 'Pb-Pb-2760.0':
         active_obs_list[s].remove('dN_dy_Lambda')
         active_obs_list[s].remove('dN_dy_Omega')
         active_obs_list[s].remove('dN_dy_Xi')
@@ -467,8 +467,8 @@ def prepare_emu_design(system_str):
     return design, design_max, design_min, labels
 
 MAP_params = {}
-MAP_params['Pb-Pb-2760'] = {}
-MAP_params['Au-Au-200'] = {}
+MAP_params['Pb-Pb-2760.0'] = {}
+MAP_params['Au-Au-200.0'] = {}
 
 #values from EnsembleSampler chains with 100 walkers and 10k steps
 #                                     N       p   sigma_k   w      d3   tau_R  alpha T_eta,kink a_low   a_high eta_kink zeta_max T_(zeta,peak) w_zeta lambda_zeta b_pi    T_s
@@ -490,11 +490,11 @@ MAP_params['Au-Au-200'] = {}
 
 #values from ptemcee sampler with 500 walkers, 2k step adaptive burn in, 10k steps, 20 temperatures
 #                                     N      p   sigma_k   w     d3   tau_R  alpha T_eta,kink a_low   a_high eta_kink zeta_max T_(zeta,peak) w_zeta lambda_zeta    b_pi   T_s
-MAP_params['Pb-Pb-2760']['Grad'] = [14.2,  0.06,  1.05,  1.12,  3.00,  1.46,  0.031,  0.223,  -0.78,   0.37,    0.096,   0.13,      0.12,      0.072,    -0.12,   4.65 , 0.136]
-MAP_params['Au-Au-200']['Grad'] =  [5.73,  0.06,  1.05,  1.12,  3.00,  1.46,  0.031,  0.223,  -0.78,   0.37,    0.096,   0.13,      0.12,      0.072,    -0.12,   4.65 , 0.136]
+MAP_params['Pb-Pb-2760.0']['Grad'] = [14.2,  0.06,  1.05,  1.12,  3.00,  1.46,  0.031,  0.223,  -0.78,   0.37,    0.096,   0.13,      0.12,      0.072,    -0.12,   4.65 , 0.136]
+MAP_params['Au-Au-200.0']['Grad'] =  [5.73,  0.06,  1.05,  1.12,  3.00,  1.46,  0.031,  0.223,  -0.78,   0.37,    0.096,   0.13,      0.12,      0.072,    -0.12,   4.65 , 0.136]
 
-MAP_params['Pb-Pb-2760']['CE'] = [15.6,  0.06,  1.00,  1.19,  2.60,  1.04,  0.024,  0.268,  -0.73,   0.38,    0.042,   0.127,     0.12,      0.025,    0.095,   5.6,  0.146]
-MAP_params['Au-Au-200']['CE'] =  [6.24,  0.06,  1.00,  1.19,  2.60,  1.04,  0.024,  0.268,  -0.73,   0.38,    0.042,   0.127,     0.12,      0.025,    0.095,   5.6,  0.146]
+MAP_params['Pb-Pb-2760.0']['CE'] = [15.6,  0.06,  1.00,  1.19,  2.60,  1.04,  0.024,  0.268,  -0.73,   0.38,    0.042,   0.127,     0.12,      0.025,    0.095,   5.6,  0.146]
+MAP_params['Au-Au-200.0']['CE'] =  [6.24,  0.06,  1.00,  1.19,  2.60,  1.04,  0.024,  0.268,  -0.73,   0.38,    0.042,   0.127,     0.12,      0.025,    0.095,   5.6,  0.146]
 
-MAP_params['Pb-Pb-2760']['PTB'] = [13.2,  0.14,  0.98,  0.81,  3.11,  1.46,  0.017,  0.194,  -0.47,   1.62,    0.105,   0.165,     0.194,      0.026,    -0.072,  5.54,  0.147]
-MAP_params['Au-Au-200']['PTB'] =  [5.31,  0.14,  0.98,  0.81,  3.11,  1.46,  0.017,  0.194,  -0.47,   1.62,    0.105,   0.165,     0.194,      0.026,    -0.072,  5.54,  0.147]
+MAP_params['Pb-Pb-2760.0']['PTB'] = [13.2,  0.14,  0.98,  0.81,  3.11,  1.46,  0.017,  0.194,  -0.47,   1.62,    0.105,   0.165,     0.194,      0.026,    -0.072,  5.54,  0.147]
+MAP_params['Au-Au-200.0']['PTB'] =  [5.31,  0.14,  0.98,  0.81,  3.11,  1.46,  0.017,  0.194,  -0.47,   1.62,    0.105,   0.165,     0.194,      0.026,    -0.072,  5.54,  0.147]
