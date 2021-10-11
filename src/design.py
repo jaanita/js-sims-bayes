@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generates Latin-hypercube parameter designs.
+Geeenerates Latin-hypercube parameter designs.
 
 Writes input files for use with the JETSCAPE framework
 Run ``python design.py --help`` for usage information.
