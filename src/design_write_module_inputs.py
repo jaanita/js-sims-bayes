@@ -77,6 +77,24 @@ def write_module_inputs(
     if (sqrts == 200):
         L_x = 12.0 #[fm]
         L_y = 12.0 #[fm]
+    elif (sqrts == 62.4):
+        L_x = 12.0 #[fm]
+        L_y = 12.0 #[fm]
+    elif (sqrts == 39):
+        L_x = 12.0 #[fm]
+        L_y = 12.0 #[fm]
+    elif (sqrts == 27):
+        L_x = 12.0 #[fm]
+        L_y = 12.0 #[fm]
+    elif (sqrts == 14.5):
+        L_x = 12.0 #[fm]
+        L_y = 12.0 #[fm]
+    elif (sqrts == 11.5):
+        L_x = 12.0 #[fm]
+        L_y = 12.0 #[fm]
+    elif (sqrts == 7.7):
+        L_x = 12.0 #[fm]
+        L_y = 12.0 #[fm]
     elif (sqrts == 2760):
         L_x = 18.0 #[fm]
         L_y = 18.0 #[fm]
