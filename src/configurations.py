@@ -78,7 +78,6 @@ systems = [
         ('Au', 'Au', 62.4),
         ('Au', 'Au', 200.0),
         ('Pb', 'Pb', 2760.0),
-        ('Au', 'Au', 200.0),
         ('Pb', 'Pb', 5020.0),
         ('Xe', 'Xe', 5440.0)
         ]
@@ -156,7 +155,7 @@ class systems_setting(dict):
         else:
             super().__setitem__(key, value)
 
-SystemsInfo = {"{:s}-{:s}-{:1f}".format(*s): systems_setting(*s) \
+SystemsInfo = {"{:s}-{:s}-{:.1f}".format(*s): systems_setting(*s) \
                 for s in systems
                }
 
@@ -356,6 +355,8 @@ active_obs_list = {
 
 for s in system_strs:
     if s == 'Au-Au-200.0':
+        
+        print('items in {}'.format(s),active_obs_list[s])
         #exluding STAR proton yield/mean pT from fit
         active_obs_list[s].remove('dN_dy_proton')
         active_obs_list[s].remove('mean_pT_proton')
