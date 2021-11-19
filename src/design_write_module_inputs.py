@@ -343,6 +343,14 @@ def write_module_inputs(
     js_file.write("    </MUSIC>\n")
     js_file.write("  </Hydro>\n")
 
+    #fixed params for iSS
+    js_file.write("  <SoftParticlization>\n")
+    js_file.write("    <iSS>\n")
+    js_file.write("      <afterburner_type>2</afterburner_type>\n")
+    js_file.write("      <Perform_resonance_decays>0</Perform_resonance_decays>\n")
+    js_file.write("    </iSS>\n")
+    js_file.write("  </SoftParticlization>\n")
+    
     #params for SMASH
     js_file.write("  <Afterburner>\n")
     js_file.write("    <SMASH>\n")
