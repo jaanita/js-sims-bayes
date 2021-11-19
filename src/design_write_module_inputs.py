@@ -288,6 +288,8 @@ def write_module_inputs(
     js_file.write("<nEvents> 1 </nEvents>\n")
     js_file.write("<setReuseHydro> true </setReuseHydro>\n")
     js_file.write("<nReuseHydro> 1 </nReuseHydro>\n")
+    js_file.write("<outputFilename>output_folder/"+str(design_point_id)+"/test_out</outputFilename>\n")
+    js_file.write("<JetScapeWriterAscii> on </JetScapeWriterAscii>\n")
     js_file.write("  <Random>\n")
     js_file.write("    <seed>" + str(js_seed) + "</seed>\n")
     js_file.write("  </Random>\n")
