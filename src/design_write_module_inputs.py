@@ -340,7 +340,8 @@ def write_module_inputs(
     js_file.write("    <MUSIC>\n")
     js_file.write("      <name>MUSIC</name>\n")
     js_file.write("      <MUSIC_input_file>music_input</MUSIC_input_file>\n")
-    js_file.write("      <Perform_CooperFrye_Feezeout>0</Perform_CooperFrye_Feezeout>\n")
+    #js_file.write("      <Perform_CooperFrye_Feezeout>0</Perform_CooperFrye_Feezeout>\n")
+    js_file.write("      <freezeout_temperature>" + str(T_switch) + "</freezeout_temperature>\n") 
     js_file.write("    </MUSIC>\n")
     js_file.write("  </Hydro>\n")
 
