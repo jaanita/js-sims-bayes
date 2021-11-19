@@ -282,9 +282,12 @@ def write_module_inputs(
 
     js_file.write("<?xml version=\"1.0\"?>\n")
     js_file.write(" <jetscape>\n")
-    js_file.write("  <debug> on </debug>\n")
-    js_file.write("  <remark> off </remark>\n")
-    js_file.write("  <vlevel> 0 </vlevel>\n")
+    #js_file.write("  <debug> on </debug>\n")
+    #js_file.write("  <remark> off </remark>\n")
+    #js_file.write("  <vlevel> 0 </vlevel>\n")
+    js_file.write("<nEvents> 1 </nEvents>\n")
+    js_file.write("<setReuseHydro> true </setReuseHydro>\n")
+    js_file.write("<nReuseHydro> 1 </nReuseHydro>\n")
     js_file.write("  <Random>\n")
     js_file.write("    <seed>" + str(js_seed) + "</seed>\n")
     js_file.write("  </Random>\n")
@@ -313,7 +316,7 @@ def write_module_inputs(
     js_file.write("                                             fluctuation=\'" + str(trento_fluctuation_k) + "\'\n")
     js_file.write("                                             nucleon-width=\'" + str(trento_nucleon_width) + "\'\n")
     js_file.write("                                             nucleon-min-dist=\'" + str(trento_nucleon_min_dist) + "\'>\n")
-
+    
     js_file.write("             </TransInputs>\n")
     js_file.write("             <LongiInputs    mean-coeff=\'1.0\'\n")
     js_file.write("                                             std-coeff=\'3.0\'\n")
@@ -335,7 +338,7 @@ def write_module_inputs(
     js_file.write("    <MUSIC>\n")
     js_file.write("      <name>MUSIC</name>\n")
     js_file.write("      <MUSIC_input_file>current_energy_folder/"+str(design_point_id)+"/music_input</MUSIC_input_file>\n")
-    #js_file.write("      <Perform_CooperFrye_Feezeout>0</Perform_CooperFrye_Feezeout>\n")
+    js_file.write("      <Perform_CooperFrye_Feezeout>0</Perform_CooperFrye_Feezeout>\n")
     js_file.write("      <freezeout_temperature>" + str(T_switch) + "</freezeout_temperature>\n") 
     js_file.write("    </MUSIC>\n")
     js_file.write("  </Hydro>\n")
