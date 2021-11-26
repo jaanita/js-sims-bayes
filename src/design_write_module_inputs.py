@@ -327,7 +327,7 @@ def write_module_inputs(
     js_file.write("                                             jacobian=\'0.8\'>\n")
     js_file.write("             </LongiInputs>\n")
     js_file.write("    </Trento>\n")
-    js_file.write("    <initial_profile_path>../examples/test_hydro_files</initial_profile_path>\n")
+    #js_file.write("    <initial_profile_path>../examples/test_hydro_files</initial_profile_path>\n")
     js_file.write("  </IS>\n")
 
     #these are dummies, not actually read by freestream-milne
@@ -340,7 +340,7 @@ def write_module_inputs(
     js_file.write("    <MUSIC>\n")
     js_file.write("      <name>MUSIC</name>\n")
     js_file.write("      <MUSIC_input_file>current_energy_folder/"+str(design_point_id)+"/music_input</MUSIC_input_file>\n")
-    js_file.write("      <Perform_CooperFrye_Feezeout>0</Perform_CooperFrye_Feezeout>\n")
+    js_file.write("      <Perform_CooperFrye_Feezeout>1</Perform_CooperFrye_Feezeout>\n")
     js_file.write("      <freezeout_temperature>" + str(T_switch) + "</freezeout_temperature>\n") 
     js_file.write("    </MUSIC>\n")
     js_file.write("  </Hydro>\n")
