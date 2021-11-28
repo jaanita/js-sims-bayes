@@ -218,7 +218,13 @@ def write_module_inputs(
     music_file.write("Include_Bulk_Visc_Yes_1_No_0 1\n") # include bulk viscous effect
     music_file.write("Include_second_order_terms 1\n")   # include second order non-linear coupling terms
     music_file.write("store_hydro_info_in_memory 1\n")   # flag to store hydro info in memory
-    music_file.write("output_evolution_data 1\n")        # flag to output evolution history to file
+    music_file.write("output_evolution_data 2\n")        # flag to output evolution history to file
+    music_file.write("outputBinaryEvolution  1\n") 
+    music_file.write("output_evolution_T_cut "+str(T_switch) +"\n") 
+    music_file.write("output_evolution_every_N_eta  1\n") 
+    music_file.write("output_evolution_every_N_y  1\n")
+    music_file.write("output_evolution_every_N_x  1\n")
+    music_file.write("output_evolution_every_N_timesteps  5\n")
     music_file.write("Do_FreezeOut_Yes_1_No_0 1\n")      # flag to find freeze-out surface
     music_file.write("Do_FreezeOut_lowtemp 0\n")         # flag to include cold corona
     music_file.write("freeze_out_method 4\n")            # method for hyper-surface finder
